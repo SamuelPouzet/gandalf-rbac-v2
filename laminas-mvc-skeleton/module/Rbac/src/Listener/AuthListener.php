@@ -4,6 +4,9 @@ namespace Rbac\Listener;
 
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\Mvc\MvcEvent;
+use Rbac\Controller\LogController;
+use Rbac\Service\AuthService;
+
 
 /**
  *
@@ -39,8 +42,25 @@ class AuthListener
     {
         $routeMatch = $this->event->getRouteMatch();
         $controllerName = $routeMatch->getParam('controller', null);
-        $actionName = $routeMatch->getParam('action', null);
 
-        var_dump($actionName);die;
+        if($controllerName == LogController::class){
+            //never check the logcontroller to avoid loop redirections
+            return true;
+        }
+        $actionName = $routeMatch->getParam('action', null);
+        $actionName = str_replace('-', '', lcfirst(ucwords($actionName, '-')));
+        $authService = $this->event->getApplication()->getServiceManager()->get(AuthService::class);
+
+        $response = $authService->authenticate($controllerName, $actionName);
+
+        switch ($response) {
+            case AuthService::ACCESS_DENIED:
+                //redirect to access denied page
+                die('access denied');
+                break;
+            case AuthService::NEED_CONNECTION:
+                die('connexion needed');
+                break;
+        }
     }
 }
