@@ -3,7 +3,9 @@
 namespace Rbac\Service\Factory;
 
 use Interop\Container\ContainerInterface;
+use Laminas\Authentication\Storage\Session;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Laminas\Session\SessionManager;
 use Rbac\Adapter\UserAdapter;
 use Rbac\Service\AccountService;
 use Rbac\Service\AuthService;
@@ -22,9 +24,9 @@ class AuthServiceFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): AuthService
     {
-        $config = $container->get('config');
-        if (isset($config['access_filter'])) {
-            $config = $config['access_filter'];
+        $globalconfig = $container->get('config');
+        if (isset($globalconfig['access_filter'])) {
+            $config = $globalconfig['access_filter'];
         } else {
             //if config not found, no access granted
             $config = [
@@ -36,7 +38,10 @@ class AuthServiceFactory implements FactoryInterface
         $accountService = $container->get(AccountService::class);
         $adapter = $container->get(UserAdapter::class);
 
-        return new AuthService($config, $accountService, $adapter);
+        $sessionManager = $container->get(SessionManager::class);
+        $authStorage = new Session($globalconfig['session_prefix']??'gandalfAuthRbac', 'session', $sessionManager);
+
+        return new AuthService($config, $accountService, $adapter, $authStorage);
     }
 
 }

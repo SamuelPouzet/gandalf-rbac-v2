@@ -25,6 +25,6 @@ class UserAdapterFactory implements FactoryInterface
 
         $entityManager = $container->get(EntityManager::class);
 
-        return new UserAdapter($authmethod, $entityManager);
+        return new UserAdapter($entityManager, $authmethod);
     }
 }
