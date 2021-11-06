@@ -47,7 +47,7 @@ return [
         'mode' => 'restrictive',
         'parameters' => [
             IndexController::class => [
-                'index' => '@',
+                'index' => ['@gandalf1', '@gandalf'],
             ]
         ]
     ],

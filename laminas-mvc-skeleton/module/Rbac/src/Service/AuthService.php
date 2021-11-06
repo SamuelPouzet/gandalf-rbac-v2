@@ -47,7 +47,7 @@ class AuthService
 
     public function checkUser(array $data)
     {
-        if($this->accountService->hasIdentity()){
+        if ($this->accountService->hasIdentity()) {
             die('Already logged in');
         }
 
@@ -89,17 +89,40 @@ class AuthService
             // * grants access to everyone so access granted
             return self::ACCESS_GRANTED;
         }
+        if (!is_array($actionConfig)) {
+            return $this->checkAuth($actionConfig);
+        } else {
+            return $this->parseAuth($actionConfig);
+        }
 
-        return $this->checkAuth($actionConfig);
     }
 
     protected function checkAuth(string $actionConfig): int
     {
         //@ alone means that every connected user can log in
-        if($this->accountService->hasIdentity()){
-            die('identityFound');
+        if ($actionConfig == '@') {
+            if ($this->accountService->hasIdentity()) {
+                return self::ACCESS_GRANTED;
+            }
+            return self::NEED_CONNECTION;
         }
 
+        return self::ACCESS_DENIED;
+    }
+
+    protected function parseAuth(array $config): int
+    {
+        $identity = $this->accountService->getInstance();
+        $login = strtolower($identity->getLogin());
+
+        foreach ($config as $c) {
+            $identifier = $c[0];
+            if ($identifier == '@') {
+                if ('@' . $login == strtolower($c)) {
+                    return self::ACCESS_GRANTED;
+                }
+            }
+        }
         return self::ACCESS_DENIED;
     }
 

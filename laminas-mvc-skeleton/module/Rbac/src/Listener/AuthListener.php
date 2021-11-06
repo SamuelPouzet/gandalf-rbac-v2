@@ -59,7 +59,7 @@ class AuthListener
                 die('access denied');
                 break;
             case AuthService::NEED_CONNECTION:
-                die('connexion needed');
+                return $this->event->getTarget()->redirect()->toRoute('login');
                 break;
         }
     }

@@ -37,11 +37,23 @@ class AccountService
         return ! $this->session->isEmpty();
     }
 
+    public function getIdentity(): bool
+    {
+        return $this->session->read();
+    }
+
     public function getInstance(): ?User
     {
+        if(!$this->hasIdentity()){
+            return null;
+        }
+
         if($this->user){
             return $this->user;
         }
+
+        $this->user = $this->entityManager->getRepository(User::class)->find($this->getIdentity());
+        return $this->user;
 
     }
 
