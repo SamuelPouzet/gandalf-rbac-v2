@@ -151,7 +151,6 @@ class AuthService
             }elseif($identifier == '#') {
                 //check by role
                 $role = substr($c, 1);
-                var_dump($role);
                 if($this->roleService->userHasRole($identity, $role)) {
                     return self::ACCESS_GRANTED;
                 }
