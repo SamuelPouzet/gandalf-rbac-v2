@@ -19,14 +19,14 @@ class AccountService
     protected $user;
 
     /**
-     * @var Session
+     * @var SessionService
      */
     protected $session;
 
     /**
      * @param EntityManager $entityManager
      */
-    public function __construct(EntityManager $entityManager, Session $session)
+    public function __construct(EntityManager $entityManager, SessionService $session)
     {
         $this->entityManager = $entityManager;
         $this->session = $session;

@@ -53,14 +53,14 @@ class AuthService
     protected $adapter;
 
     /**
-     * @var Session
+     * @var SessionService
      */
     protected $session;
 
     /**
      * @param array $config
      */
-    public function __construct(array $config, AccountService $accountService, RoleService $roleService, UserAdapter $adapter, Session $session)
+    public function __construct(array $config, AccountService $accountService, RoleService $roleService, UserAdapter $adapter, SessionService $session)
     {
         $this->config = $config;
         $this->accountService = $accountService;
@@ -83,10 +83,15 @@ class AuthService
             ->setPassword($data['password'])
             ->authenticate();
 
+
         if ($result->getCode() == Result::ACCESS_GRANTED) {
             $this->session->write($result->getUser()->getId());
-            die('access granted, need to create session');
+            if($data['remember_me']){
+                $this->session->rememberMe();
+            }
         }
+
+        //@todo redirectroute
     }
 
     /**
@@ -148,15 +153,20 @@ class AuthService
      */
     protected function checkAuth(string $actionConfig): int
     {
-        //@ alone means that every connected user can log in
-        if ($actionConfig == '@') {
-            if ($this->accountService->hasIdentity()) {
-                return self::ACCESS_GRANTED;
-            }
+        if (! $this->accountService->hasIdentity()) {
+
             return self::NEED_CONNECTION;
         }
 
+        //@ alone means that every connected user can log in
+        if ($actionConfig == '@') {
+            return self::ACCESS_GRANTED;
+        }
+
         $identity = $this->accountService->getInstance();
+        if(!$identity){
+            return self::NEED_CONNECTION;
+        }
         $login = strtolower($identity->getLogin());
 
         $identifier = $actionConfig[0];
