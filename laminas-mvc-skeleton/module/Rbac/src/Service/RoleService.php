@@ -8,6 +8,9 @@ use Rbac\Element\Rbac;
 use Rbac\Entity\Role;
 use Rbac\Entity\User;
 
+/**
+ *
+ */
 class RoleService
 {
     /**
@@ -36,24 +39,27 @@ class RoleService
     }
 
 
+    /**
+     * @param bool $reset default false
+     * @throws \Laminas\Cache\Exception\ExceptionInterface
+     */
     protected function init($reset = false)
     {
-        if($reset){
+        if ($reset) {
             $this->cache->removeItem('rbac_container');
         }
 
         $result = false;
         $this->rbac = $this->cache->getItem('rbac_container', $result);
 
-        if(!$result){
+        if (!$result) {
             $this->rbac = new Rbac();
 
             $roles = $this->entityManager->getRepository(Role::class)->findBy([
-                'is_active'=>Role::ROLE_ACTIVE,
+                'is_active' => Role::ROLE_ACTIVE,
             ]);
 
-            foreach ($roles as $role)
-            {
+            foreach ($roles as $role) {
                 $parents = $this->addParentsRecursive($role);
                 $this->rbac->addRole($role, $parents);
             }
@@ -62,11 +68,16 @@ class RoleService
 
     }
 
+    /**
+     * @param Role $role
+     * @param array $return
+     * @return array|mixed
+     */
     protected function addParentsRecursive(Role $role, $return = [])
     {
         $parents = $role->getParents();
-        foreach ($parents as $parent){
-            if(!in_array($parent, $return)){
+        foreach ($parents as $parent) {
+            if (!in_array($parent, $return)) {
                 //avoid loop
                 $return[] = $parent;
                 $return = $this->addParentsRecursive($parent, $return);
@@ -76,13 +87,34 @@ class RoleService
         return $return;
     }
 
+    /**
+     * @param User $user
+     * @param string $role
+     * @return bool
+     * @throws \Laminas\Cache\Exception\ExceptionInterface
+     */
     public function userHasRole(User $user, string $role): bool
     {
-        if(!$this->rbac){
+        if (!$this->rbac) {
             $this->init();
         }
 
         return $this->rbac->hasRole($role, $user);
+    }
+
+    /**
+     * @param User $user
+     * @param string $permission
+     * @return bool
+     * @throws \Laminas\Cache\Exception\ExceptionInterface
+     */
+    public function userHasPermission(User $user, string $permission): bool
+    {
+        if (!$this->rbac) {
+            $this->init();
+        }
+
+        return $this->rbac->hasPermission($permission, $user);
     }
 
 }

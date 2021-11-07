@@ -127,8 +127,13 @@ class AuthService
             if($this->roleService->userHasRole($identity, $role)) {
                 return self::ACCESS_GRANTED;
             }
+        }elseif($identifier == '+') {
+            //check by permission
+            $permission = substr($actionConfig, 1);
+            if($this->roleService->userHasPermission($identity, $permission)) {
+                return self::ACCESS_GRANTED;
+            }
         }
-
 
         return self::ACCESS_DENIED;
     }
@@ -152,6 +157,12 @@ class AuthService
                 //check by role
                 $role = substr($c, 1);
                 if($this->roleService->userHasRole($identity, $role)) {
+                    return self::ACCESS_GRANTED;
+                }
+            }elseif($identifier == '+') {
+                //check by permission
+                $permission = substr($c, 1);
+                if($this->roleService->userHasPermission($identity, $permission)) {
                     return self::ACCESS_GRANTED;
                 }
             }

@@ -62,10 +62,10 @@ class Role
 
     /**
      * @var Collection
-     * ORM\ManyToMany(targetEntity="Privilege", inversedBy="roles", cascade={"persist", "merge"})
-     * ORM\JoinTable(name="role_privilege",
-     *   joinColumns={ORM\JoinColumn(name="id_role", referencedColumnName="id")},
-     *   inverseJoinColumns={ORM\JoinColumn(name="id_privilege", referencedColumnName="id")}
+     * @ORM\ManyToMany(targetEntity="Permission", inversedBy="roles", cascade={"persist", "merge"})
+     * @ORM\JoinTable(name="role_privilege",
+     *   joinColumns={@ORM\JoinColumn(name="id_role", referencedColumnName="id")},
+     *   inverseJoinColumns={@ORM\JoinColumn(name="id_privilege", referencedColumnName="id")}
      * )
      */
     protected $privileges;
