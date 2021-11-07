@@ -107,6 +107,17 @@ class AuthService
             return self::NEED_CONNECTION;
         }
 
+        $identity = $this->accountService->getInstance();
+        $login = strtolower($identity->getLogin());
+
+        $identifier = $actionConfig[0];
+        if ($identifier == '@') {
+            if ('@' . $login == strtolower($actionConfig)) {
+                return self::ACCESS_GRANTED;
+            }
+        }
+
+
         return self::ACCESS_DENIED;
     }
 
