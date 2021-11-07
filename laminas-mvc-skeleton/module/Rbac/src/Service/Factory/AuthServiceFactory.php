@@ -9,6 +9,7 @@ use Laminas\Session\SessionManager;
 use Rbac\Adapter\UserAdapter;
 use Rbac\Service\AccountService;
 use Rbac\Service\AuthService;
+use Rbac\Service\RoleService;
 
 /**
  * AuthServiceFactory
@@ -36,12 +37,13 @@ class AuthServiceFactory implements FactoryInterface
         }
 
         $accountService = $container->get(AccountService::class);
+        $roleService = $container->get(RoleService::class);
         $adapter = $container->get(UserAdapter::class);
 
         $sessionManager = $container->get(SessionManager::class);
         $authStorage = new Session($globalconfig['session_prefix']??'gandalfAuthRbac', 'session', $sessionManager);
 
-        return new AuthService($config, $accountService, $adapter, $authStorage);
+        return new AuthService($config, $accountService, $roleService, $adapter, $authStorage);
     }
 
 }

@@ -52,7 +52,7 @@ return [
         'mode' => 'restrictive',
         'parameters' => [
             IndexController::class => [
-                'index' => ['@gandalf', '@nemesis'],
+                'index' => ['#role.user', '@nemesis'],
             ]
         ]
     ],

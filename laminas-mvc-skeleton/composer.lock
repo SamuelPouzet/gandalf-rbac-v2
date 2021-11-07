@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0c2f42e2814e1f6d69f701e5a197de0e",
+    "content-hash": "3d9cb9d35f8cc74bb2d184fb90e78603",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -3232,6 +3232,63 @@
                 "routing"
             ],
             "time": "2021-10-13T16:02:43+00:00"
+        },
+        {
+            "name": "laminas/laminas-serializer",
+            "version": "2.11.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laminas/laminas-serializer.git",
+                "reference": "a76e3a341a1a4993fd88e1d3587b93d60406d08e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laminas/laminas-serializer/zipball/a76e3a341a1a4993fd88e1d3587b93d60406d08e",
+                "reference": "a76e3a341a1a4993fd88e1d3587b93d60406d08e",
+                "shasum": ""
+            },
+            "require": {
+                "laminas/laminas-json": "^3.1",
+                "laminas/laminas-stdlib": "^3.2",
+                "laminas/laminas-zendframework-bridge": "^1.0",
+                "php": "^7.3 || ~8.0.0 || ~8.1.0"
+            },
+            "replace": {
+                "zendframework/zend-serializer": "^2.9.1"
+            },
+            "require-dev": {
+                "laminas/laminas-coding-standard": "~2.3.0",
+                "laminas/laminas-math": "^3.3",
+                "laminas/laminas-servicemanager": "^3.6",
+                "phpunit/phpunit": "^9.3"
+            },
+            "suggest": {
+                "laminas/laminas-math": "(^3.3) To support Python Pickle serialization",
+                "laminas/laminas-servicemanager": "(^3.6) To support plugin manager support"
+            },
+            "type": "library",
+            "extra": {
+                "laminas": {
+                    "component": "Laminas\\Serializer",
+                    "config-provider": "Laminas\\Serializer\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laminas\\Serializer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Serialize and deserialize PHP structures to a variety of representations",
+            "homepage": "https://laminas.dev",
+            "keywords": [
+                "laminas",
+                "serializer"
+            ],
+            "time": "2021-10-24T10:53:34+00:00"
         },
         {
             "name": "laminas/laminas-servicemanager",

@@ -25,6 +25,11 @@ class AuthService
     protected $accountService;
 
     /**
+     * @var RoleService
+     */
+    protected $roleService;
+
+    /**
      * @var UserAdapter
      */
     protected $adapter;
@@ -37,10 +42,11 @@ class AuthService
     /**
      * @param array $config
      */
-    public function __construct(array $config, AccountService $accountService, UserAdapter $adapter, Session $session)
+    public function __construct(array $config, AccountService $accountService, RoleService $roleService, UserAdapter $adapter, Session $session)
     {
         $this->config = $config;
         $this->accountService = $accountService;
+        $this->roleService = $roleService;
         $this->adapter = $adapter;
         $this->session = $session;
     }
@@ -115,6 +121,12 @@ class AuthService
             if ('@' . $login == strtolower($actionConfig)) {
                 return self::ACCESS_GRANTED;
             }
+        }elseif($identifier == '#') {
+            //check by role
+            $role = substr($actionConfig, 1);
+            if($this->roleService->userHasRole($identity, $role)) {
+                return self::ACCESS_GRANTED;
+            }
         }
 
 
@@ -127,12 +139,20 @@ class AuthService
         if(!$identity){
             return self::NEED_CONNECTION;
         }
-        $login = strtolower($identity->getLogin());
 
         foreach ($config as $c) {
             $identifier = $c[0];
             if ($identifier == '@') {
+                //check by named login
+                $login = strtolower($identity->getLogin());
                 if ('@' . $login == strtolower($c)) {
+                    return self::ACCESS_GRANTED;
+                }
+            }elseif($identifier == '#') {
+                //check by role
+                $role = substr($c, 1);
+                var_dump($role);
+                if($this->roleService->userHasRole($identity, $role)) {
                     return self::ACCESS_GRANTED;
                 }
             }
