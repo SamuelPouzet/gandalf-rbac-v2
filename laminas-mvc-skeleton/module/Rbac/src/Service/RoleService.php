@@ -3,6 +3,7 @@
 namespace Rbac\Service;
 
 use Doctrine\ORM\EntityManager;
+use Laminas\Cache\Storage\StorageInterface;
 use Rbac\Element\Rbac;
 use Rbac\Entity\Role;
 use Rbac\Entity\User;
@@ -20,28 +21,44 @@ class RoleService
     protected $entityManager;
 
     /**
-     * @param Rbac|null $rbac
+     * @var StorageInterface
      */
-    public function __construct(EntityManager $entityManager)
+    protected $cache;
+
+    /**
+     * @param Rbac|null $rbac
+     * @param StorageInterface $cache
+     */
+    public function __construct(EntityManager $entityManager, StorageInterface $cache)
     {
         $this->entityManager = $entityManager;
+        $this->cache = $cache;
     }
 
 
-    protected function init()
+    protected function init($reset = false)
     {
-        $this->rbac = new Rbac();
-
-        $roles = $this->entityManager->getRepository(Role::class)->findBy([
-            'is_active'=>Role::ROLE_ACTIVE,
-        ]);
-
-        foreach ($roles as $role)
-        {
-            $parents = $this->addParentsRecursive($role);
-            $this->rbac->addRole($role, $parents);
+        if($reset){
+            $this->cache->removeItem('rbac_container');
         }
 
+        $result = false;
+        $this->rbac = $this->cache->getItem('rbac_container', $result);
+
+        if(!$result){
+            $this->rbac = new Rbac();
+
+            $roles = $this->entityManager->getRepository(Role::class)->findBy([
+                'is_active'=>Role::ROLE_ACTIVE,
+            ]);
+
+            foreach ($roles as $role)
+            {
+                $parents = $this->addParentsRecursive($role);
+                $this->rbac->addRole($role, $parents);
+            }
+            $this->cache->setItem('rbac_container', $this->rbac);
+        }
 
     }
 
@@ -66,7 +83,6 @@ class RoleService
         }
 
         return $this->rbac->hasRole($role, $user);
-
     }
 
 }

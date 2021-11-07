@@ -22,7 +22,8 @@ class RoleServiceFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): RoleService
     {
         $entityManager = $container->get(EntityManager::class);
-        return new RoleService($entityManager);
+        $cache = $container->get('FilesystemCache');
+        return new RoleService($entityManager, $cache);
     }
 
 }
