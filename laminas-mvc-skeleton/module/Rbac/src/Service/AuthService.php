@@ -6,12 +6,30 @@ use Laminas\Authentication\Storage\Session;
 use Rbac\Adapter\UserAdapter;
 use Rbac\Element\Result;
 
+/**
+ * AuthService
+ */
 class AuthService
 {
 
+    /**
+     *
+     */
     const RESTRICTIVE = 'restrictive';
+
+    /**
+     *
+     */
     const NEED_CONNECTION = 0;
+
+    /**
+     *
+     */
     const ACCESS_GRANTED = 1;
+
+    /**
+     *
+     */
     const ACCESS_DENIED = 2;
 
     /**
@@ -51,6 +69,9 @@ class AuthService
         $this->session = $session;
     }
 
+    /**
+     * @param array $data
+     */
     public function checkUser(array $data)
     {
         if ($this->accountService->hasIdentity()) {
@@ -68,6 +89,23 @@ class AuthService
         }
     }
 
+    /**
+     * quitUser
+     */
+    public function quitUser()
+    {
+        if (!$this->accountService->hasIdentity()) {
+            die('Not logged in');
+        }
+        $this->session->clear();
+
+    }
+
+    /**
+     * @param string $controllerName
+     * @param string $actionName
+     * @return int
+     */
     public function authenticate(string $controllerName, string $actionName)
     {
         $mode = $this->config['mode'];
@@ -103,6 +141,11 @@ class AuthService
 
     }
 
+    /**
+     * @param string $actionConfig
+     * @return int
+     * @throws \Laminas\Cache\Exception\ExceptionInterface
+     */
     protected function checkAuth(string $actionConfig): int
     {
         //@ alone means that every connected user can log in
@@ -121,16 +164,16 @@ class AuthService
             if ('@' . $login == strtolower($actionConfig)) {
                 return self::ACCESS_GRANTED;
             }
-        }elseif($identifier == '#') {
+        } elseif ($identifier == '#') {
             //check by role
             $role = substr($actionConfig, 1);
-            if($this->roleService->userHasRole($identity, $role)) {
+            if ($this->roleService->userHasRole($identity, $role)) {
                 return self::ACCESS_GRANTED;
             }
-        }elseif($identifier == '+') {
+        } elseif ($identifier == '+') {
             //check by permission
             $permission = substr($actionConfig, 1);
-            if($this->roleService->userHasPermission($identity, $permission)) {
+            if ($this->roleService->userHasPermission($identity, $permission)) {
                 return self::ACCESS_GRANTED;
             }
         }
@@ -138,10 +181,15 @@ class AuthService
         return self::ACCESS_DENIED;
     }
 
+    /**
+     * @param array $config
+     * @return int
+     * @throws \Laminas\Cache\Exception\ExceptionInterface
+     */
     protected function parseAuth(array $config): int
     {
         $identity = $this->accountService->getInstance();
-        if(!$identity){
+        if (!$identity) {
             return self::NEED_CONNECTION;
         }
 
@@ -153,16 +201,16 @@ class AuthService
                 if ('@' . $login == strtolower($c)) {
                     return self::ACCESS_GRANTED;
                 }
-            }elseif($identifier == '#') {
+            } elseif ($identifier == '#') {
                 //check by role
                 $role = substr($c, 1);
-                if($this->roleService->userHasRole($identity, $role)) {
+                if ($this->roleService->userHasRole($identity, $role)) {
                     return self::ACCESS_GRANTED;
                 }
-            }elseif($identifier == '+') {
+            } elseif ($identifier == '+') {
                 //check by permission
                 $permission = substr($c, 1);
-                if($this->roleService->userHasPermission($identity, $permission)) {
+                if ($this->roleService->userHasPermission($identity, $permission)) {
                     return self::ACCESS_GRANTED;
                 }
             }

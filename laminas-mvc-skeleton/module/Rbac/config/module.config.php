@@ -37,6 +37,16 @@ return [
                     ],
                 ],
             ],
+            'logout' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route' => '/logout',
+                    'defaults' => [
+                        'controller' => LogController::class,
+                        'action' => 'logout',
+                    ],
+                ],
+            ],
             'user' => [
                 'type' => Segment::class,
                 'options' => [
@@ -72,7 +82,7 @@ return [
         'parameters' => [
             IndexController::class => [
                 // 'index' => ['+moderate', '#role.user2', '@gandalf2'],
-                'index' => '#role.user',
+                'index' => '@',
             ],
             UserController::class => [
                 // 'index' => ['+moderate', '#role.user2', '@gandalf2'],

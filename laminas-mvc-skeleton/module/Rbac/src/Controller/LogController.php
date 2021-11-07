@@ -42,4 +42,14 @@ class LogController extends AbstractActionController
         ]);
     }
 
+    /**
+     * @return ViewModel
+     */
+    public function LogoutAction(): ViewModel
+    {
+        $this->authService->quitUser();
+
+        return new ViewModel();
+    }
+
 }
