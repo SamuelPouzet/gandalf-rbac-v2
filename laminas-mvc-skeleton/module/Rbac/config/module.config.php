@@ -5,13 +5,18 @@ namespace Rbac;
 use Application\Controller\IndexController;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Laminas\Router\Http\Literal;
+use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Rbac\Adapter\Factory\UserAdapterFactory;
 use Rbac\Adapter\UserAdapter;
 use Rbac\Controller\Factory\LogControllerFactory;
+use Rbac\Controller\Factory\UserControllerFactory;
 use Rbac\Controller\LogController;
 use Rbac\Controller\Plugin\CurrentUserPlugin;
 use Rbac\Controller\Plugin\Factory\CurrentUserPluginFactory;
+use Rbac\Controller\UserController;
+use Rbac\Manager\Factory\UserManagerFactory;
+use Rbac\Manager\UserManager;
 use Rbac\Service\AccountService;
 use Rbac\Service\AuthService;
 use Rbac\Service\Factory\AccountServiceFactory;
@@ -32,11 +37,23 @@ return [
                     ],
                 ],
             ],
+            'user' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/user[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => UserController::class,
+                        'action' => 'list',
+                    ],
+                ],
+            ],
+
         ],
     ],
     'controllers' => [
         'factories' => [
             LogController::class => LogControllerFactory::class,
+            UserController::class => UserControllerFactory::class,
         ],
     ],
     'service_manager' => [
@@ -46,22 +63,33 @@ return [
             RoleService::class => RoleServiceFactory::class,
 
             UserAdapter::class => UserAdapterFactory::class,
+
+            UserManager::class => UserManagerFactory::class,
         ],
     ],
     'access_filter' => [
         'mode' => 'restrictive',
         'parameters' => [
             IndexController::class => [
-                'index' => ['+moderate', '#role.user2', '@gandalf2'],
-            ]
+                // 'index' => ['+moderate', '#role.user2', '@gandalf2'],
+                'index' => '#role.user',
+            ],
+            UserController::class => [
+                // 'index' => ['+moderate', '#role.user2', '@gandalf2'],
+                'list' => '#role.admin',
+                'show' => '#role.admin',
+                'update' => '#role.admin',
+                'add' => '#role.admin',
+                'password' => '#role.admin',
+            ],
         ]
     ],
     'controller_plugins' => [
         'factories' => [
-            CurrentUserPlugin::class=>CurrentUserPluginFactory::class,
+            CurrentUserPlugin::class => CurrentUserPluginFactory::class,
         ],
         'aliases' => [
-            'currentUser'=>CurrentUserPlugin::class,
+            'currentUser' => CurrentUserPlugin::class,
         ]
     ],
     'doctrine' => [

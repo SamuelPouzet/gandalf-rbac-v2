@@ -1,0 +1,30 @@
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Login</th>
+        <th scope="col">Email</th>
+        <th scope="col">Status</th>
+        <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($this->users as $user): ?>
+        <tr>
+            <th scope="row"><?= $user->getId(); ?></th>
+            <td><?= $user->getLogin(); ?></td>
+            <td><?= $user->getEmail(); ?></td>
+            <td><?= $user->getStatus(); ?></td>
+            <td>
+                <ul>
+                    <li><a href="<?= $this->url('user', ['action'=>'show', 'id'=>$user->getId()]); ?>">Voir</a></li>
+                    <li><a href="<?= $this->url('user', ['action'=>'update', 'id'=>$user->getId()]); ?>">Modifier</a></li>
+                    <li><a href="<?= $this->url('user', ['action'=>'password', 'id'=>$user->getId()]); ?>">Mot de passe</a></li>
+                </ul>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+
+    </tbody>
+</table>
+

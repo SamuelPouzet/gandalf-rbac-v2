@@ -1,0 +1,53 @@
+<?= $this->form()->openTag($this->form); ?>
+
+<div class="card">
+    <h5 class="card-header">Edition d'un utilisateur: <?= $this->user->getId(); ?> - <?= $this->user->getLogin(); ?></h5>
+    <div class="card-body">
+        <form>
+            <div class="form-group">
+                <?= $this->formLabel($this->form->get('email')); ?>
+                <?= $this->formElement($this->form->get('email')); ?>
+                <?= $this->formElementErrors($this->form->get('email')); ?>
+            </div>
+            <div class="form-group">
+                <?= $this->formLabel($this->form->get('login')); ?>
+                <?= $this->formElement($this->form->get('login')); ?>
+                <?= $this->formElementErrors($this->form->get('login')); ?>
+            </div>
+            <div class="form-group">
+                <?= $this->formLabel($this->form->get('name')); ?>
+                <?= $this->formElement($this->form->get('name')); ?>
+                <?= $this->formElementErrors($this->form->get('name')); ?>
+            </div>
+            <div class="form-group">
+                <?= $this->formLabel($this->form->get('firstname')); ?>
+                <?= $this->formElement($this->form->get('firstname')); ?>
+                <?= $this->formElementErrors($this->form->get('firstname')); ?>
+            </div>
+            <?php if($this->form->has('password')): ?>
+            <div class="form-group">
+                <?= $this->formLabel($this->form->get('password')); ?>
+                <?= $this->formElement($this->form->get('password')); ?>
+                <?= $this->formElementErrors($this->form->get('password')); ?>
+            </div>
+            <?php endif; ?>
+
+            <div class="custom-file mb-3">
+                <?= $this->formLabel($this->form->get('avatar')); ?>
+                <?= $this->formElement($this->form->get('avatar')); ?>
+                <?= $this->formElementErrors($this->form->get('avatar')); ?>
+            </div>
+
+            <div class="form-group">
+                <?= $this->formLabel($this->form->get('status')); ?>
+                <?= $this->formElement($this->form->get('status')); ?>
+                <?= $this->formElementErrors($this->form->get('status')); ?>
+            </div>
+            <?= $this->formElement($this->form->get('submit')); ?>
+
+            <?= $this->formElement($this->form->get('csrf')); ?>
+        </form>
+    </div>
+</div>
+
+<?= $this->form()->closeTag(); ?>

@@ -7,10 +7,12 @@ use Laminas\Form\Element\Csrf;
 use Laminas\Form\Element\Email;
 use Laminas\Form\Element\File;
 use Laminas\Form\Element\Password;
+use Laminas\Form\Element\Select;
 use Laminas\Form\Element\Submit;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Form;
 use Laminas\InputFilter\FileInput;
+use Rbac\Entity\User;
 
 /**
  * UserForm
@@ -23,14 +25,14 @@ class UserForm extends Form
      * @param string $strategy
      * @param array $options
      */
-    public function __construct($name = null, $strategy="create", array $options = [])
+    public function __construct($name = null, $strategy = "create", array $options = [])
     {
         parent::__construct($name, $options);
 
         $this->setAttribute('enctype', 'multipart/form-data');
 
         $this->addElements($strategy);
-        $this->addInputFilters();
+        $this->addInputFilters($strategy);
     }
 
     /**
@@ -44,7 +46,7 @@ class UserForm extends Form
             'name' => 'email',
             'attributes' => [
                 'id' => 'content',
-                'class'=>'form-control',
+                'class' => 'form-control',
             ],
             'options' => [
                 'label' => 'Email',
@@ -56,7 +58,7 @@ class UserForm extends Form
             'name' => 'login',
             'attributes' => [
                 'id' => 'login',
-                'class'=>'form-control',
+                'class' => 'form-control',
             ],
             'options' => [
                 'label' => 'Login',
@@ -68,7 +70,7 @@ class UserForm extends Form
             'name' => 'name',
             'attributes' => [
                 'id' => 'name',
-                'class'=>'form-control',
+                'class' => 'form-control',
             ],
             'options' => [
                 'label' => 'Name',
@@ -76,41 +78,37 @@ class UserForm extends Form
         ]);
 
         $this->add([
-            'type'  =>File::class,
+            'type' => File::class,
             'name' => 'avatar',
             'attributes' => [
                 'id' => 'img',
-                'class'=> 'custom-file-input',
             ],
             'options' => [
                 'label' => 'Avatar',
-                'labelAttributes' => [
-                    'class'=> 'custom-file-label',
-                ]
             ],
         ]);
 
-        $this->get('avatar')->setLabelAttributes(['class'=> 'custom-file-label']);
+        //$this->get('avatar')->setLabelAttributes(['class'=> 'custom-file-label']);
 
         $this->add([
             'type' => Text::class,
             'name' => 'firstname',
             'attributes' => [
                 'id' => 'firstname',
-                'class'=>'form-control',
+                'class' => 'form-control',
             ],
             'options' => [
                 'label' => 'Prénom',
             ],
         ]);
 
-        if($strategy == 'create'){
+        if ($strategy == 'create') {
             $this->add([
                 'type' => Password::class,
                 'name' => 'password',
                 'attributes' => [
                     'id' => 'password',
-                    'class'=>'form-control',
+                    'class' => 'form-control',
                 ],
                 'options' => [
                     'label' => 'Mot de passe',
@@ -118,6 +116,23 @@ class UserForm extends Form
             ]);
         }
 
+        $this->add([
+            'type' => Select::class,
+            'name' => 'status',
+            'attributes' => [
+                'id' => 'status',
+                'class' => 'form-control',
+            ],
+            'options' => [
+                'label' => 'Status',
+                'value_options'=>[
+                    User::USER_NOT_ACTVATED => 'non activé',
+                    User::USER_ACTVATED => 'Activé',
+                    User::USER_INACTIVE => 'Désactivé',
+                    User::USER_RETIRED => 'Supprimé',
+                ],
+            ],
+        ]);
 
         // Add the CSRF field
         $this->add([
@@ -132,7 +147,7 @@ class UserForm extends Form
 
         // Add the Submit button
         $this->add([
-            'type'  => Submit::class,
+            'type' => Submit::class,
             'name' => 'submit',
             'attributes' => [
                 'value' => 'Change',
@@ -147,41 +162,40 @@ class UserForm extends Form
     /**
      *addInputFilters
      */
-    private function addInputFilters(): void
+    private function addInputFilters($strategy): void
     {
         // Create input filter
         $inputFilter = $this->getInputFilter();
 
         $inputFilter->add([
-            'type'     => FileInput::class,
-            'name'     => 'avatar',  // Element's name.
-            'required' => true,    // Whether the field is required.
+            'type' => FileInput::class,
+            'name' => 'avatar',  // Element's name.
+            'required' => $strategy == 'create',    // Whether the field is required.
             'validators' => [
-                ['name'    => 'FileUploadFile'],
+                ['name' => 'FileUploadFile'],
                 [
-                    'name'    => 'FileMimeType',
+                    'name' => 'FileMimeType',
                     'options' => [
-                        'mimeType'  => ['image/jpeg', 'image/png']
+                        'mimeType' => ['image/jpeg', 'image/png']
                     ]
                 ],
-                ['name'    => 'FileIsImage'],
+                ['name' => 'FileIsImage'],
                 [
-                    'name'    => 'FileImageSize',
+                    'name' => 'FileImageSize',
                     'options' => [
-                        'minWidth'  => 128,
+                        'minWidth' => 128,
                         'minHeight' => 128,
-                        'maxWidth'  => 4096,
+                        'maxWidth' => 4096,
                         'maxHeight' => 4096
                     ]
                 ],
             ],
-            'filters'  => [
+            'filters' => [
                 [
                     'name' => 'FileRenameUpload',
                     'options' => [
-                        //@Todo set in local config
-                        'target' => '/',
-                        'useUploadName' => true,
+                        'target' => User::IMAGE_PATH,
+                        'useUploadName' => false,
                         'useUploadExtension' => true,
                         'overwrite' => true,
                         'randomize' => true

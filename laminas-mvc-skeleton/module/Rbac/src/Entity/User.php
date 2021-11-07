@@ -9,6 +9,7 @@
 namespace Rbac\Entity;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,6 +26,7 @@ class User
     const USER_INACTIVE = 2;
     const USER_RETIRED = 3;
 
+    const IMAGE_PATH = PUBLIC_PATH . DS . 'img' . DS . 'avatars';
 
     /**
      * @var int

@@ -11,8 +11,9 @@ use Laminas\Stdlib\ArrayUtils;
  */
 chdir(dirname(__DIR__));
 
-const PUBIC_PATH = __DIR__;
+const PUBLIC_PATH = __DIR__;
 define('ROOT_PATH', dirname(__DIR__));
+const DS = DIRECTORY_SEPARATOR;
 
 // Decline static file requests back to the PHP built-in webserver
 if (php_sapi_name() === 'cli-server') {
