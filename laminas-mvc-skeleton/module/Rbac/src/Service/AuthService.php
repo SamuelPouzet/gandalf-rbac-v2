@@ -124,6 +124,9 @@ class AuthService
     protected function parseAuth(array $config): int
     {
         $identity = $this->accountService->getInstance();
+        if(!$identity){
+            return self::NEED_CONNECTION;
+        }
         $login = strtolower($identity->getLogin());
 
         foreach ($config as $c) {

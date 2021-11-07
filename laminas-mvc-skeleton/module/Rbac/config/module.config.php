@@ -10,10 +10,14 @@ use Rbac\Adapter\Factory\UserAdapterFactory;
 use Rbac\Adapter\UserAdapter;
 use Rbac\Controller\Factory\LogControllerFactory;
 use Rbac\Controller\LogController;
+use Rbac\Controller\Plugin\CurrentUserPlugin;
+use Rbac\Controller\Plugin\Factory\CurrentUserPluginFactory;
 use Rbac\Service\AccountService;
 use Rbac\Service\AuthService;
 use Rbac\Service\Factory\AccountServiceFactory;
 use Rbac\Service\Factory\AuthServiceFactory;
+use Rbac\Service\Factory\RoleServiceFactory;
+use Rbac\Service\RoleService;
 
 return [
     'router' => [
@@ -39,6 +43,7 @@ return [
         'factories' => [
             AuthService::class => AuthServiceFactory::class,
             AccountService::class => AccountServiceFactory::class,
+            RoleService::class => RoleServiceFactory::class,
 
             UserAdapter::class => UserAdapterFactory::class,
         ],
@@ -47,8 +52,16 @@ return [
         'mode' => 'restrictive',
         'parameters' => [
             IndexController::class => [
-                'index' => ['@gandalf1', '@gandalf'],
+                'index' => ['@gandalf', '@nemesis'],
             ]
+        ]
+    ],
+    'controller_plugins' => [
+        'factories' => [
+            CurrentUserPlugin::class=>CurrentUserPluginFactory::class,
+        ],
+        'aliases' => [
+            'currentUser'=>CurrentUserPlugin::class,
         ]
     ],
     'doctrine' => [
