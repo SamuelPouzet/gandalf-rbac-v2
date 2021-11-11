@@ -21,11 +21,26 @@ use Doctrine\ORM\Mapping as ORM;
 class User
 {
 
+    /**
+     * @const int
+     */
     const USER_NOT_ACTVATED = 0;
+    /**
+     *@const int
+     */
     const USER_ACTVATED = 1;
+    /**
+     * @const int
+     */
     const USER_INACTIVE = 2;
+    /**
+     * @const int
+     */
     const USER_RETIRED = 3;
 
+    /**
+     * @const int
+     */
     const IMAGE_PATH = PUBLIC_PATH . DS . 'img' . DS . 'avatars';
 
     /**
@@ -99,11 +114,17 @@ class User
      */
     protected $avatarPath = null;
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->roles = new ArrayCollection();
     }
 
+    /**
+     * @return array
+     */
     public function getArrayCopy(): array
     {
         return get_object_vars($this);
@@ -307,6 +328,15 @@ class User
     {
         $this->roles = new ArrayCollection();
         return $this;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isFlushed(): bool
+    {
+        return $this->id !== null;
     }
 
 }

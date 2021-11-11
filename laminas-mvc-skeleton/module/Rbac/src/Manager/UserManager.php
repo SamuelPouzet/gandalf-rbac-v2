@@ -43,7 +43,7 @@ class UserManager
         $user->setLogin($data['login']);
         $user->setStatus($data['status']);
 
-        $this->setPassword($user, $data['password']);
+        self::setPassword($user, $data['password']);
 
         $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name'=>'role.user']);
 
@@ -91,7 +91,7 @@ class UserManager
      */
     public function updatePassword(array $data, User $user)
     {
-        $this->setPassword($user, $data['password']);
+        self::setPassword($user, $data['password']);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
     }
@@ -101,7 +101,7 @@ class UserManager
      * @param string $password
      * @return User
      */
-    protected function setPassword(User $user, string $password)
+    public static function setPassword(User $user, string $password)
     {
         $bCrypt = new Bcrypt();
         $hash = $bCrypt->create($password);

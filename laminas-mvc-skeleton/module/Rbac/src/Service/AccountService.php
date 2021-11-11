@@ -4,7 +4,10 @@ namespace Rbac\Service;
 
 use Doctrine\ORM\EntityManager;
 use Laminas\Authentication\Storage\Session;
+use Rbac\Entity\Role;
 use Rbac\Entity\User;
+use Rbac\Manager\TokenManager;
+use Rbac\Manager\UserManager;
 
 class AccountService
 {
@@ -24,11 +27,17 @@ class AccountService
     protected $session;
 
     /**
+     * @var TokenManager
+     */
+    protected $tokenManager;
+
+    /**
      * @param EntityManager $entityManager
      */
-    public function __construct(EntityManager $entityManager, SessionService $session)
+    public function __construct(EntityManager $entityManager, SessionService $session, TokenManager $tokenManager)
     {
         $this->entityManager = $entityManager;
+        $this->tokenManager = $tokenManager;
         $this->session = $session;
     }
 
@@ -58,5 +67,42 @@ class AccountService
     }
 
 
+    public function create(array $data)
+    {
+        $checkMail = $this->entityManager->getRepository(User::class)->findOneBy([
+            'email'=>$data['email'],
+        ]);
+        if($checkMail){
+            throw new \Exception('mail already provided');
+        }
+
+        $user = new User();
+
+        $user->setName($data['name']);
+        $user->setAvatar($data['avatar']['name']);
+        $user->setFirstname($data['firstname']);
+        $user->setDateCreate(new \DateTimeImmutable());
+        $user->setEmail($data['email']);
+        $user->setLogin($data['login']);
+        $user->setStatus(User::USER_NOT_ACTVATED);
+
+        UserManager::setPassword($user, $data['password']);
+
+        $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name'=>'role.user']);
+
+        $user->addRole($role);
+
+        $this->entityManager->persist($user);
+
+        //activationTokenGeneration
+        $token = $this->tokenManager->createToken($user);
+        $this->entityManager->persist($token);
+
+        //$this->mailerService->createMessage($token);
+
+        $this->entityManager->flush();
+
+        return $user;
+    }
 
 }

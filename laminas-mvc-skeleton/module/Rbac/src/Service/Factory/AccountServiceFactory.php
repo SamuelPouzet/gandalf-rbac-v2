@@ -5,6 +5,7 @@ namespace Rbac\Service\Factory;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Rbac\Manager\TokenManager;
 use Rbac\Service\AccountService;
 use Rbac\Service\SessionService;
 
@@ -15,7 +16,8 @@ class AccountServiceFactory implements FactoryInterface
     {
         $entityManager = $container->get(EntityManager::class);
         $sessionManager = $container->get(SessionService::class);
-        return new AccountService($entityManager, $sessionManager);
+        $tokenManager = $container->get(TokenManager::class);
+        return new AccountService($entityManager, $sessionManager, $tokenManager);
 
     }
 

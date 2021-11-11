@@ -7,6 +7,7 @@ use Laminas\View\Model\ViewModel;
 use Rbac\Form\LogForm;
 use Rbac\Form\UserExternalForm;
 use Rbac\Form\UserForm;
+use Rbac\Service\AccountService;
 use Rbac\Service\AuthService;
 
 class LogController extends AbstractActionController
@@ -17,11 +18,17 @@ class LogController extends AbstractActionController
     protected $authService;
 
     /**
+     * @var AccountService
+     */
+    protected $accountService;
+
+    /**
      * @param AuthService $authService
      */
-    public function __construct(AuthService $authService)
+    public function __construct(AuthService $authService, AccountService $accountService)
     {
         $this->authService = $authService;
+        $this->accountService = $accountService;
     }
 
     /**
@@ -60,10 +67,13 @@ class LogController extends AbstractActionController
         $form->addCaptcha();
 
         if($this->getRequest()->isPost()){
-            $data = $this->params()->fromPost();
+            $data = array_merge(
+                $this->params()->fromPost(),
+                $this->params()->fromFiles()
+            );
             $form->setData($data);
             if($form->isValid()){
-                $this->authService->checkUser( $form->getData() );
+                $this->accountService->create( $form->getData() );
             }
         }
 

@@ -15,7 +15,9 @@ use Rbac\Controller\LogController;
 use Rbac\Controller\Plugin\CurrentUserPlugin;
 use Rbac\Controller\Plugin\Factory\CurrentUserPluginFactory;
 use Rbac\Controller\UserController;
+use Rbac\Manager\Factory\TokenManagerFactory;
 use Rbac\Manager\Factory\UserManagerFactory;
+use Rbac\Manager\TokenManager;
 use Rbac\Manager\UserManager;
 use Rbac\Service\AccountService;
 use Rbac\Service\AuthService;
@@ -88,6 +90,7 @@ return [
             UserAdapter::class => UserAdapterFactory::class,
 
             UserManager::class => UserManagerFactory::class,
+            TokenManager::class =>TokenManagerFactory::class,
         ],
     ],
     'access_filter' => [
