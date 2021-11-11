@@ -64,6 +64,7 @@ class UserController extends AbstractActionController
         }
 
         $form = new UserForm('user-form', 'update');
+        $form->addStatus();
 
         if($this->getRequest()->isPost()){
             $request = $this->getRequest();
@@ -90,6 +91,7 @@ class UserController extends AbstractActionController
     {
 
         $form = new UserForm('user-form', 'create');
+        $form->addStatus();
 
         if($this->getRequest()->isPost()){
             $request = $this->getRequest();

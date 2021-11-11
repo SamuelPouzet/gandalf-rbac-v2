@@ -3,6 +3,8 @@
 namespace Rbac\Form;
 
 use Application\Entity\Article;
+use Laminas\Captcha\Image;
+use Laminas\Form\Element\Captcha;
 use Laminas\Form\Element\Csrf;
 use Laminas\Form\Element\Email;
 use Laminas\Form\Element\File;
@@ -116,24 +118,6 @@ class UserForm extends Form
             ]);
         }
 
-        $this->add([
-            'type' => Select::class,
-            'name' => 'status',
-            'attributes' => [
-                'id' => 'status',
-                'class' => 'form-control',
-            ],
-            'options' => [
-                'label' => 'Status',
-                'value_options'=>[
-                    User::USER_NOT_ACTVATED => 'non activé',
-                    User::USER_ACTVATED => 'Activé',
-                    User::USER_INACTIVE => 'Désactivé',
-                    User::USER_RETIRED => 'Supprimé',
-                ],
-            ],
-        ]);
-
         // Add the CSRF field
         $this->add([
             'type' => Csrf::class,
@@ -156,6 +140,53 @@ class UserForm extends Form
         ]);
 
         $this->get('submit')->setValue('Enregistrer');
+    }
+
+    public function addCaptcha()
+    {
+        // Add the CAPTCHA field
+        $this->add([
+            'type' => Captcha::class,
+            'name' => 'captcha',
+            'options' => [
+                'label' => 'Human check',
+                'captcha' => [
+                    'class' => Image::class,
+                    'imgDir' => PUBLIC_PATH . DS . 'img' . DS . 'captcha',
+                    'suffix' => '.png',
+                    'imgUrl' => '/img/captcha/',
+                    'imgAlt' => 'CAPTCHA Image',
+                    'font' => ROOT_PATH . DS . 'data' . DS . 'font' . DS . 'thorne_shaded.ttf',
+                    'fsize' => 24,
+                    'width' => 350,
+                    'height' => 100,
+                    'expiration' => 600,
+                    'dotNoiseLevel' => 40,
+                    'lineNoiseLevel' => 3
+                ],
+            ],
+        ]);
+    }
+
+    public function addStatus()
+    {
+        $this->add([
+            'type' => Select::class,
+            'name' => 'status',
+            'attributes' => [
+                'id' => 'status',
+                'class' => 'form-control',
+            ],
+            'options' => [
+                'label' => 'Status',
+                'value_options'=>[
+                    User::USER_NOT_ACTVATED => 'non activé',
+                    User::USER_ACTVATED => 'Activé',
+                    User::USER_INACTIVE => 'Désactivé',
+                    User::USER_RETIRED => 'Supprimé',
+                ],
+            ],
+        ]);
     }
 
 

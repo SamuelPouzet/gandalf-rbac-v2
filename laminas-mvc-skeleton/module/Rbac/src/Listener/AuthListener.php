@@ -56,7 +56,8 @@ class AuthListener
         switch ($response) {
             case AuthService::ACCESS_DENIED:
                 //redirect to access denied page
-                die('access denied');
+                //return $this->event->getTarget()->redirect()->toRoute('log');
+                return $this->event->getResponse()->setStatusCode(404);
                 break;
             case AuthService::NEED_CONNECTION:
                 return $this->event->getTarget()->redirect()->toRoute('login');

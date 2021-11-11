@@ -22,7 +22,9 @@ use Rbac\Service\AuthService;
 use Rbac\Service\Factory\AccountServiceFactory;
 use Rbac\Service\Factory\AuthServiceFactory;
 use Rbac\Service\Factory\RoleServiceFactory;
+use Rbac\Service\Factory\SessionServiceFactory;
 use Rbac\Service\RoleService;
+use Rbac\Service\SessionService;
 
 return [
     'router' => [
@@ -30,7 +32,7 @@ return [
             'login' => [
                 'type' => Literal::class,
                 'options' => [
-                    'route' => '/log',
+                    'route' => '/login',
                     'defaults' => [
                         'controller' => LogController::class,
                         'action' => 'login',
@@ -44,6 +46,16 @@ return [
                     'defaults' => [
                         'controller' => LogController::class,
                         'action' => 'logout',
+                    ],
+                ],
+            ],
+            'newaccount' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route' => '/signin',
+                    'defaults' => [
+                        'controller' => LogController::class,
+                        'action' => 'signin',
                     ],
                 ],
             ],
@@ -71,6 +83,7 @@ return [
             AuthService::class => AuthServiceFactory::class,
             AccountService::class => AccountServiceFactory::class,
             RoleService::class => RoleServiceFactory::class,
+            SessionService::class => SessionServiceFactory::class,
 
             UserAdapter::class => UserAdapterFactory::class,
 
@@ -86,7 +99,7 @@ return [
             ],
             UserController::class => [
                 // 'index' => ['+moderate', '#role.user2', '@gandalf2'],
-                'list' => '#role.admin',
+                'list' => '#role.admin2',
                 'show' => '#role.admin',
                 'update' => '#role.admin',
                 'add' => '#role.admin',

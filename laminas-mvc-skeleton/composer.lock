@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3d9cb9d35f8cc74bb2d184fb90e78603",
+    "content-hash": "99a5226bea37832ba2cacd0335d8dd97",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -1314,16 +1314,16 @@
         },
         {
             "name": "laminas/laminas-cache",
-            "version": "2.13.0",
+            "version": "2.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-cache.git",
-                "reference": "566948e32f30881cb903ffbd0e3e20dac00cd83e"
+                "reference": "fc3255833c1c687ed2c5312e9663ef062be155c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-cache/zipball/566948e32f30881cb903ffbd0e3e20dac00cd83e",
-                "reference": "566948e32f30881cb903ffbd0e3e20dac00cd83e",
+                "url": "https://api.github.com/repos/laminas/laminas-cache/zipball/fc3255833c1c687ed2c5312e9663ef062be155c9",
+                "reference": "fc3255833c1c687ed2c5312e9663ef062be155c9",
                 "shasum": ""
             },
             "require": {
@@ -1401,7 +1401,7 @@
                 "psr-16",
                 "psr-6"
             ],
-            "time": "2021-08-08T10:21:18+00:00"
+            "time": "2021-11-07T13:11:51+00:00"
         },
         {
             "name": "laminas/laminas-cache-storage-adapter-apc",
@@ -2141,6 +2141,63 @@
                 "laminas"
             ],
             "time": "2020-10-12T16:24:25+00:00"
+        },
+        {
+            "name": "laminas/laminas-captcha",
+            "version": "2.11.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laminas/laminas-captcha.git",
+                "reference": "6b0b98d388b713119cbb5788ea0b90cd6e63513a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laminas/laminas-captcha/zipball/6b0b98d388b713119cbb5788ea0b90cd6e63513a",
+                "reference": "6b0b98d388b713119cbb5788ea0b90cd6e63513a",
+                "shasum": ""
+            },
+            "require": {
+                "laminas/laminas-math": "^2.7 || ^3.0",
+                "laminas/laminas-stdlib": "^3.6",
+                "php": "^7.3 || ~8.0.0 || ~8.1.0"
+            },
+            "conflict": {
+                "zendframework/zend-captcha": "*"
+            },
+            "require-dev": {
+                "laminas/laminas-coding-standard": "~2.1.4",
+                "laminas/laminas-recaptcha": "^3.0",
+                "laminas/laminas-session": "^2.12",
+                "laminas/laminas-text": "^2.8",
+                "laminas/laminas-validator": "^2.14",
+                "phpunit/phpunit": "^9.4.3",
+                "psalm/plugin-phpunit": "^0.15.1",
+                "vimeo/psalm": "^4.6"
+            },
+            "suggest": {
+                "laminas/laminas-i18n-resources": "Translations of captcha messages",
+                "laminas/laminas-recaptcha": "Laminas\\ReCaptcha component",
+                "laminas/laminas-session": "Laminas\\Session component",
+                "laminas/laminas-text": "Laminas\\Text component",
+                "laminas/laminas-validator": "Laminas\\Validator component"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Laminas\\Captcha\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Generate and validate CAPTCHAs using Figlets, images, ReCaptcha, and more",
+            "homepage": "https://laminas.dev",
+            "keywords": [
+                "captcha",
+                "laminas"
+            ],
+            "time": "2021-10-01T15:30:12+00:00"
         },
         {
             "name": "laminas/laminas-component-installer",

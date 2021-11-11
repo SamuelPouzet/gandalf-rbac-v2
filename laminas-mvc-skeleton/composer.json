@@ -20,7 +20,8 @@
         "laminas/laminas-i18n": "^2.11",
         "laminas/laminas-math": "^3.2",
         "laminas/laminas-crypt": "^3.3",
-        "laminas/laminas-serializer": "^2.9"
+        "laminas/laminas-serializer": "^2.9",
+        "laminas/laminas-captcha": "^2.11"
     },
     "autoload": {
         "psr-4": {
