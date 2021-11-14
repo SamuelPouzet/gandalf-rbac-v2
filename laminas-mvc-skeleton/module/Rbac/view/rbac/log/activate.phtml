@@ -1,0 +1,12 @@
+<?php if ($this->response->getCode() !== \Rbac\Element\TokenActivation::TOKEN_AVAILABLE): ?>
+    <div class="alert alert-primary">
+        <strong>Oh Zut!</strong>
+        L'activation n'a pas pu se faire pour la raison suivante:
+        <?= $this->response->getMessage(); ?>
+    </div>
+<?php else: ?>
+    <div class="alert alert-success">
+        <strong>Félicitations <?= $this->response->getToken()->getUser()->getLogin(); ?>!</strong>
+        Votre compte est bien activé, vous pouvez dès à présent vous connecter et profiter du site.
+    </div>
+<?php endif; ?>

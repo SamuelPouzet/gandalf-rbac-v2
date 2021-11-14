@@ -4,8 +4,10 @@ namespace Rbac\Service;
 
 use Doctrine\ORM\EntityManager;
 use Laminas\Authentication\Storage\Session;
+use Rbac\Element\TokenActivation;
 use Rbac\Entity\Role;
 use Rbac\Entity\User;
+use Rbac\Entity\UserToken;
 use Rbac\Manager\TokenManager;
 use Rbac\Manager\UserManager;
 
@@ -133,4 +135,32 @@ class AccountService
         return $user;
     }
 
+    public function activateByToken(string $token): TokenActivation
+    {
+        $interval = new \DateInterval('PT48H');
+        $tokenInstance = $this->entityManager->getRepository(UserToken::class)->findActiveToken($token, $interval);
+        $result = new TokenActivation();
+        if(!$tokenInstance){
+            $result->setMessage('Token not found');
+            $result->setCode(TokenActivation::NO_TOKEN_AVAILABLE);
+            return $result;
+        }
+
+        $user = $tokenInstance->getUser();
+        if($user->getStatus() != 0){
+            $result->setMessage('User Already Activated');
+            $result->setCode(TokenActivation::ALREADY_ACTIVATED);
+            return $result;
+        }
+        $tokenInstance->setIsActive(false);
+        $user->setStatus(User::USER_ACTVATED);
+
+        $this->entityManager->persist($tokenInstance);
+        $this->entityManager->flush();
+
+        $result->setMessage('Activation done');
+        $result->setCode(TokenActivation::TOKEN_AVAILABLE);
+        $result->setToken($tokenInstance);
+        return $result;
+    }
 }

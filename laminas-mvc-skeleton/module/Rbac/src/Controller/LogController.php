@@ -83,4 +83,22 @@ class LogController extends AbstractActionController
 
     }
 
+    public function activateAction() : ViewModel
+    {
+
+        $token = $this->params()->fromRoute('token', null);
+
+        if(!$token){
+            $this->getResponse()->setStatusCode(404);
+        }
+
+        $response = $this->accountService->activateByToken($token);
+
+
+        return new ViewModel([
+            'response'=>$response,
+        ]);
+
+    }
+
 }

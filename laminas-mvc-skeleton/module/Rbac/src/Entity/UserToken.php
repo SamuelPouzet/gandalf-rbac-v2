@@ -5,7 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Laminas\Form\Element\Collection;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Rbac\Repository\UserTokenRepository")
  * @ORM\Table(name="user_token")
  */
 class UserToken
