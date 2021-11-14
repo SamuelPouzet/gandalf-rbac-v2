@@ -23,8 +23,10 @@ use Rbac\Service\AccountService;
 use Rbac\Service\AuthService;
 use Rbac\Service\Factory\AccountServiceFactory;
 use Rbac\Service\Factory\AuthServiceFactory;
+use Rbac\Service\Factory\MailerServiceFactory;
 use Rbac\Service\Factory\RoleServiceFactory;
 use Rbac\Service\Factory\SessionServiceFactory;
+use Rbac\Service\MailerService;
 use Rbac\Service\RoleService;
 use Rbac\Service\SessionService;
 
@@ -61,6 +63,16 @@ return [
                     ],
                 ],
             ],
+            'activate' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/activate/:token',
+                    'defaults' => [
+                        'controller' => LogController::class,
+                        'action' => 'activate',
+                    ],
+                ],
+            ],
             'user' => [
                 'type' => Segment::class,
                 'options' => [
@@ -86,11 +98,12 @@ return [
             AccountService::class => AccountServiceFactory::class,
             RoleService::class => RoleServiceFactory::class,
             SessionService::class => SessionServiceFactory::class,
+            MailerService::class => MailerServiceFactory::class,
 
             UserAdapter::class => UserAdapterFactory::class,
 
             UserManager::class => UserManagerFactory::class,
-            TokenManager::class =>TokenManagerFactory::class,
+            TokenManager::class => TokenManagerFactory::class,
         ],
     ],
     'access_filter' => [

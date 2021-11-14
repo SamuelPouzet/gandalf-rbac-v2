@@ -9,6 +9,9 @@ use Rbac\Entity\User;
 use Rbac\Manager\TokenManager;
 use Rbac\Manager\UserManager;
 
+/**
+ * AccountService
+ */
 class AccountService
 {
     /**
@@ -32,25 +35,44 @@ class AccountService
     protected $tokenManager;
 
     /**
-     * @param EntityManager $entityManager
+     * @var MailerService
      */
-    public function __construct(EntityManager $entityManager, SessionService $session, TokenManager $tokenManager)
+    protected $mailerService;
+
+
+    /**
+     * @param EntityManager $entityManager
+     * @param SessionService $session
+     * @param TokenManager $tokenManager
+     * @param MailerService $mailerService
+     */
+    public function __construct(EntityManager $entityManager, SessionService $session, TokenManager $tokenManager, MailerService $mailerService)
     {
         $this->entityManager = $entityManager;
         $this->tokenManager = $tokenManager;
+        $this->mailerService = $mailerService;
         $this->session = $session;
     }
 
+    /**
+     * @return bool
+     */
     public function hasIdentity(): bool
     {
         return ! $this->session->isEmpty();
     }
 
+    /**
+     * @return bool
+     */
     public function getIdentity(): bool
     {
         return $this->session->read();
     }
 
+    /**
+     * @return User|null
+     */
     public function getInstance(): ?User
     {
         if(!$this->hasIdentity()){
@@ -67,6 +89,12 @@ class AccountService
     }
 
 
+    /**
+     * @param array $data
+     * @return User
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public function create(array $data)
     {
         $checkMail = $this->entityManager->getRepository(User::class)->findOneBy([
@@ -98,7 +126,7 @@ class AccountService
         $token = $this->tokenManager->createToken($user);
         $this->entityManager->persist($token);
 
-        //$this->mailerService->createMessage($token);
+        $this->mailerService->createMessage($token);
 
         $this->entityManager->flush();
 

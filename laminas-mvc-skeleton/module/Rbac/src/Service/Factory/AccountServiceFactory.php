@@ -7,6 +7,7 @@ use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Rbac\Manager\TokenManager;
 use Rbac\Service\AccountService;
+use Rbac\Service\MailerService;
 use Rbac\Service\SessionService;
 
 class AccountServiceFactory implements FactoryInterface
@@ -17,7 +18,9 @@ class AccountServiceFactory implements FactoryInterface
         $entityManager = $container->get(EntityManager::class);
         $sessionManager = $container->get(SessionService::class);
         $tokenManager = $container->get(TokenManager::class);
-        return new AccountService($entityManager, $sessionManager, $tokenManager);
+        $mailerService = $container->get(MailerService::class);
+
+        return new AccountService($entityManager, $sessionManager, $tokenManager, $mailerService);
 
     }
 
