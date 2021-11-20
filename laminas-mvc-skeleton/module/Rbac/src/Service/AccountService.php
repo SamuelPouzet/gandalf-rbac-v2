@@ -61,7 +61,7 @@ class AccountService
      */
     public function hasIdentity(): bool
     {
-        return ! $this->session->isEmpty();
+        return !$this->session->isEmpty();
     }
 
     /**
@@ -77,11 +77,11 @@ class AccountService
      */
     public function getInstance(): ?User
     {
-        if(!$this->hasIdentity()){
+        if (!$this->hasIdentity()) {
             return null;
         }
 
-        if($this->user){
+        if ($this->user) {
             return $this->user;
         }
 
@@ -100,9 +100,9 @@ class AccountService
     public function create(array $data)
     {
         $checkMail = $this->entityManager->getRepository(User::class)->findOneBy([
-            'email'=>$data['email'],
+            'email' => $data['email'],
         ]);
-        if($checkMail){
+        if ($checkMail) {
             throw new \Exception('mail already provided');
         }
 
@@ -118,7 +118,7 @@ class AccountService
 
         UserManager::setPassword($user, $data['password']);
 
-        $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name'=>'role.user']);
+        $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name' => 'role.user']);
 
         $user->addRole($role);
 
@@ -140,14 +140,14 @@ class AccountService
         $interval = new \DateInterval('PT48H');
         $tokenInstance = $this->entityManager->getRepository(UserToken::class)->findActiveToken($token, $interval);
         $result = new TokenActivation();
-        if(!$tokenInstance){
+        if (!$tokenInstance) {
             $result->setMessage('Token not found');
             $result->setCode(TokenActivation::NO_TOKEN_AVAILABLE);
             return $result;
         }
 
         $user = $tokenInstance->getUser();
-        if($user->getStatus() != 0){
+        if ($user->getStatus() != 0) {
             $result->setMessage('User Already Activated');
             $result->setCode(TokenActivation::ALREADY_ACTIVATED);
             return $result;
