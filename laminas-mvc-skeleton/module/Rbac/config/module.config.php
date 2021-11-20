@@ -6,7 +6,6 @@ use Application\Controller\IndexController;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
-use Laminas\ServiceManager\Factory\InvokableFactory;
 use Rbac\Adapter\Factory\UserAdapterFactory;
 use Rbac\Adapter\UserAdapter;
 use Rbac\Controller\Factory\LogControllerFactory;
@@ -15,6 +14,8 @@ use Rbac\Controller\LogController;
 use Rbac\Controller\Plugin\CurrentUserPlugin;
 use Rbac\Controller\Plugin\Factory\CurrentUserPluginFactory;
 use Rbac\Controller\UserController;
+use Rbac\Manager\BanManager;
+use Rbac\Manager\Factory\BanManagerFactory;
 use Rbac\Manager\Factory\TokenManagerFactory;
 use Rbac\Manager\Factory\UserManagerFactory;
 use Rbac\Manager\TokenManager;
@@ -23,9 +24,11 @@ use Rbac\Service\AccountService;
 use Rbac\Service\AuthService;
 use Rbac\Service\Factory\AccountServiceFactory;
 use Rbac\Service\Factory\AuthServiceFactory;
+use Rbac\Service\Factory\FailToBanServiceFactory;
 use Rbac\Service\Factory\MailerServiceFactory;
 use Rbac\Service\Factory\RoleServiceFactory;
 use Rbac\Service\Factory\SessionServiceFactory;
+use Rbac\Service\FailToBanService;
 use Rbac\Service\MailerService;
 use Rbac\Service\RoleService;
 use Rbac\Service\SessionService;
@@ -99,11 +102,13 @@ return [
             RoleService::class => RoleServiceFactory::class,
             SessionService::class => SessionServiceFactory::class,
             MailerService::class => MailerServiceFactory::class,
+            FailToBanService::class => FailToBanServiceFactory::class,
 
             UserAdapter::class => UserAdapterFactory::class,
 
             UserManager::class => UserManagerFactory::class,
             TokenManager::class => TokenManagerFactory::class,
+            BanManager::class => BanManagerFactory::class,
         ],
     ],
     'access_filter' => [

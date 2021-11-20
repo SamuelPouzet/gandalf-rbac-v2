@@ -58,15 +58,26 @@ class AuthService
     protected $session;
 
     /**
+     * @var FailToBanService
+     */
+    protected $failToBanService;
+
+    /**
      * @param array $config
      */
-    public function __construct(array $config, AccountService $accountService, RoleService $roleService, UserAdapter $adapter, SessionService $session)
+    public function __construct(array $config,
+                                AccountService $accountService,
+                                RoleService $roleService,
+                                UserAdapter $adapter,
+                                SessionService $session,
+                                FailToBanService $failToBanService)
     {
         $this->config = $config;
         $this->accountService = $accountService;
         $this->roleService = $roleService;
         $this->adapter = $adapter;
         $this->session = $session;
+        $this->failToBanService = $failToBanService;
     }
 
     /**
@@ -89,8 +100,11 @@ class AuthService
             if($data['remember_me']){
                 $this->session->rememberMe();
             }
+        }else{
+            //failtoban
+            $this->failToBanService->failLogin($this->adapter);
         }
-
+die('test');
         //@todo redirectroute
     }
 

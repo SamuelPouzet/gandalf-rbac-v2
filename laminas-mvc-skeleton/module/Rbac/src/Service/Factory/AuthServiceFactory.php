@@ -9,6 +9,7 @@ use Laminas\Session\SessionManager;
 use Rbac\Adapter\UserAdapter;
 use Rbac\Service\AccountService;
 use Rbac\Service\AuthService;
+use Rbac\Service\FailToBanService;
 use Rbac\Service\RoleService;
 use Rbac\Service\SessionService;
 
@@ -41,8 +42,9 @@ class AuthServiceFactory implements FactoryInterface
         $roleService = $container->get(RoleService::class);
         $adapter = $container->get(UserAdapter::class);
         $sessionService = $container->get(SessionService::class);
+        $failtobanService = $container->get(FailToBanService::class);
 
-        return new AuthService($config, $accountService, $roleService, $adapter, $sessionService);
+        return new AuthService($config, $accountService, $roleService, $adapter, $sessionService, $failtobanService);
     }
 
 }

@@ -90,8 +90,9 @@ class UserAdapter implements AdapterInterface
                 ->setMessage($e->getMessage());
             return $result;
         }
+        $count = count($users);
+        if( $count != 1 ){
 
-        if($count = count($users) != 1 ){
             if ($count > 1) {
                 $result
                     ->setCode(Result::FAILURE_IDENTITY_AMBIGUOUS)
