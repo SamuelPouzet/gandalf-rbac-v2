@@ -91,7 +91,9 @@ class UserAdapter implements AdapterInterface
             return $result;
         }
 
-        if($count = count($users) != 1 ){
+        $count = count($users);
+
+        if( $count != 1 ){
             if ($count > 1) {
                 $result
                     ->setCode(Result::FAILURE_IDENTITY_AMBIGUOUS)
