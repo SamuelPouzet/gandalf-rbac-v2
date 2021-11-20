@@ -53,6 +53,26 @@ return [
                     ],
                 ],
             ],
+            'forbidden' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route' => '/access_denied',
+                    'defaults' => [
+                        'controller' => LogController::class,
+                        'action' => 'forbidden',
+                    ],
+                ],
+            ],
+            'initialize' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route' => '/initialize',
+                    'defaults' => [
+                        'controller' => DefaultController::class,
+                        'action' => 'index',
+                    ],
+                ],
+            ],
             'newaccount' => [
                 'type' => Literal::class,
                 'options' => [

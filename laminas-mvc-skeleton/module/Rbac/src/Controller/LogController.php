@@ -61,6 +61,14 @@ class LogController extends AbstractActionController
         return new ViewModel();
     }
 
+    /**
+     * @return ViewModel
+     */
+    public function forbiddenAction(): ViewModel
+    {
+        return new ViewModel();
+    }
+
     public function signinAction() : ViewModel
     {
         $form = new UserForm();
