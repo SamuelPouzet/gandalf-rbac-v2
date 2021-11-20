@@ -58,7 +58,19 @@ class AuthListener
                 //redirect to access denied page
                 return $this->event->getTarget()->redirect()->toRoute('forbidden');
             case AuthService::NEED_CONNECTION:
-                return $this->event->getTarget()->redirect()->toRoute('login');
+                //@todo maybe give redirectUrl in session
+                // Remember the URL of the page the user tried to access. We will
+                // redirect the user to that URL after successful login.
+                $uri = $this->event->getApplication()->getRequest()->getUri();
+                // Make the URL relative (remove scheme, user info, host name and port)
+                // to avoid redirecting to other domain by a malicious user.
+                $uri->setScheme(null)
+                    ->setHost(null)
+                    ->setPort(null)
+                    ->setUserInfo(null);
+                $redirectUrl = $uri->toString();
+                return $this->event->getTarget()->redirect()->toRoute('login', [],
+                    ['query'=>['redirectUrl'=>$redirectUrl]]);
         }
     }
 }

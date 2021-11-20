@@ -72,7 +72,7 @@ class AuthService
     /**
      * @param array $data
      */
-    public function checkUser(array $data)
+    public function checkUser(array $data): Result
     {
         if ($this->accountService->hasIdentity()) {
             die('Already logged in');
@@ -86,18 +86,18 @@ class AuthService
 
         if ($result->getCode() == Result::ACCESS_GRANTED) {
             $this->session->write($result->getUser()->getId());
-            if($data['remember_me']){
+            if ($data['remember_me']) {
                 $this->session->rememberMe();
             }
         }
 
-        //@todo redirectroute
+        return $result;
     }
 
     /**
      * quitUser
      */
-    public function quitUser()
+    public function quitUser(): void
     {
         if (!$this->accountService->hasIdentity()) {
             die('Not logged in');
@@ -111,7 +111,7 @@ class AuthService
      * @param string $actionName
      * @return int
      */
-    public function authenticate(string $controllerName, string $actionName)
+    public function authenticate(string $controllerName, string $actionName): int
     {
         $mode = $this->config['mode'];
         $parameters = $this->config['parameters'];
@@ -153,7 +153,7 @@ class AuthService
      */
     protected function checkAuth(string $actionConfig): int
     {
-        if (! $this->accountService->hasIdentity()) {
+        if (!$this->accountService->hasIdentity()) {
 
             return self::NEED_CONNECTION;
         }
@@ -164,7 +164,7 @@ class AuthService
         }
 
         $identity = $this->accountService->getInstance();
-        if(!$identity){
+        if (!$identity) {
             return self::NEED_CONNECTION;
         }
         $login = strtolower($identity->getLogin());

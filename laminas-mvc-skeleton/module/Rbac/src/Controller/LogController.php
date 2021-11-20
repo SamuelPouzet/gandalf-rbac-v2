@@ -4,6 +4,7 @@ namespace Rbac\Controller;
 
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
+use Rbac\Element\Result;
 use Rbac\Form\LogForm;
 use Rbac\Form\UserExternalForm;
 use Rbac\Form\UserForm;
@@ -36,19 +37,27 @@ class LogController extends AbstractActionController
      */
     public function loginAction(): ViewModel
     {
+        $redirecturl = $this->params()->fromQuery('redirectUrl', '/');
         $form = new LogForm();
 
-        if($this->getRequest()->isPost()){
+        $viewModel = new ViewModel();
+
+        if ($this->getRequest()->isPost()) {
             $data = $this->params()->fromPost();
             $form->setData($data);
-            if($form->isValid()){
-                $this->authService->checkUser( $form->getData() );
+            if ($form->isValid()) {
+                 $result = $this->authService->checkUser($form->getData());
+
+                 if($result->getCode()==Result::ACCESS_GRANTED){
+                     $this->redirect()->toUrl($redirecturl);
+                 }
+                $viewModel->setVariable('result', $result);
             }
         }
 
-        return new ViewModel([
-            'form'=>$form,
-        ]);
+        $viewModel->setVariable('form', $form);
+
+        return $viewModel;
     }
 
     /**
@@ -66,37 +75,38 @@ class LogController extends AbstractActionController
      */
     public function forbiddenAction(): ViewModel
     {
+        $this->getResponse()->setStatusCode(403);
         return new ViewModel();
     }
 
-    public function signinAction() : ViewModel
+    public function signinAction(): ViewModel
     {
         $form = new UserForm();
         $form->addCaptcha();
 
-        if($this->getRequest()->isPost()){
+        if ($this->getRequest()->isPost()) {
             $data = array_merge(
                 $this->params()->fromPost(),
                 $this->params()->fromFiles()
             );
             $form->setData($data);
-            if($form->isValid()){
-                $this->accountService->create( $form->getData() );
+            if ($form->isValid()) {
+                $this->accountService->create($form->getData());
             }
         }
 
         return new ViewModel([
-            'form'=>$form,
+            'form' => $form,
         ]);
 
     }
 
-    public function activateAction() : ViewModel
+    public function activateAction(): ViewModel
     {
 
         $token = $this->params()->fromRoute('token', null);
 
-        if(!$token){
+        if (!$token) {
             $this->getResponse()->setStatusCode(404);
         }
 
@@ -104,7 +114,7 @@ class LogController extends AbstractActionController
 
 
         return new ViewModel([
-            'response'=>$response,
+            'response' => $response,
         ]);
 
     }
