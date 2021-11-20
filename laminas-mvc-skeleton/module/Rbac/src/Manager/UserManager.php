@@ -45,9 +45,14 @@ class UserManager
 
         self::setPassword($user, $data['password']);
 
-        $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name'=>'role.user']);
-
-        $user->addRole($role);
+        if(!$data['roles']){
+            $role = $this->entityManager->getRepository(Role::class)->findOneBy(['name'=>'role.user']);
+            $user->addRole($role);
+        }else{
+            foreach ($data['roles'] as $role){
+                $user->addRole($role);
+            }
+        }
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

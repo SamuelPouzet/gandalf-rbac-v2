@@ -52,8 +52,9 @@ final class Version20211120113856 extends AbstractMigration
 
         // Add indexes and foreign keys to privilege table
         $table = $schema->getTable('privilege');
-        $table->addIndex(['name'], 'idx_privilege_parent_id');
-        $table->addIndex(['is_active'], 'idx_privilege_child_id');
+        $table->addIndex(['name'], 'idx_privilege_name');
+        $table->addUniqueIndex(['name'], 'idx_privilege_unique_name');
+        $table->addIndex(['is_active'], 'idx_privilege_is_active');
     }
 
     public function down(Schema $schema): void

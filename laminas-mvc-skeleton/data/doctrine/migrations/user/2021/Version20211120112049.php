@@ -26,7 +26,7 @@ final class Version20211120112049 extends AbstractMigration
         $table->addColumn('name', 'string', ['notnull'=>true, 'length'=>128]);
         $table->addColumn('login', 'string', ['notnull'=>true, 'length'=>128]);
         $table->addColumn('firstname', 'string', ['notnull'=>true, 'length'=>128]);
-        $table->addColumn('email', 'integer', ['notnull'=>true]);
+        $table->addColumn('email', 'string', ['notnull'=>true, 'length'=>225]);
         $table->addColumn('avatar', 'string', ['notnull'=>true, 'length'=>156]);
         $table->addColumn('password', 'string', ['notnull'=>true, 'length'=>225]);
         $table->addColumn('date_create', 'datetime', ['notnull'=>true]);
@@ -45,7 +45,8 @@ final class Version20211120112049 extends AbstractMigration
         //create table role
         $table = $schema->createTable('role');
         $table->addColumn('id', 'integer', ['autoincrement'=>true]);
-        $table->addColumn('name', 'string', ['notnull'=>true]);
+        $table->addColumn('name', 'string', ['notnull'=>true, 'length'=>225]);
+        $table->addColumn('description', 'text', ['notnull'=>true, 'length'=>65535]);
         $table->addColumn('is_active', 'boolean');
         $table->setPrimaryKey(['id']);
         $table->addOption('engine' , 'InnoDB');
@@ -70,6 +71,7 @@ final class Version20211120112049 extends AbstractMigration
         $table = $schema->createTable('privilege');
         $table->addColumn('id', 'integer', ['autoincrement'=>true]);
         $table->addColumn('name', 'string', ['notnull'=>true, 'length'=>128]);
+        $table->addColumn('description', 'text', ['notnull'=>true, 'length'=>65535]);
         $table->addColumn('is_active', 'boolean');
         $table->setPrimaryKey(['id']);
         $table->addOption('engine' , 'InnoDB');

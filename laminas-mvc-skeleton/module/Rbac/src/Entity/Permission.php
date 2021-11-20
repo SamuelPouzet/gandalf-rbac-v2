@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class Permission
  * @package Rbac\Entity
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Rbac\Repository\PermissionRepository")
  * @ORM\Table(name="privilege")
  */
 class Permission

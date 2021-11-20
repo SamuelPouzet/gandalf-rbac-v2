@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class Role
  * @package Rbac\Entity
- * @ORM\Entity
+ * @ORM\Entity (repositoryClass="Rbac\Repository\RoleRepository")
  * @ORM\Table(name="role")
  */
 class Role
@@ -31,6 +31,12 @@ class Role
      * @ORM\Column(name="name")
      */
     protected $name;
+
+    /**
+     * @var string
+     * @ORM\Column(name="description")
+     */
+    protected $description;
 
     /**
      * @var int
@@ -68,14 +74,14 @@ class Role
      *   inverseJoinColumns={@ORM\JoinColumn(name="id_privilege", referencedColumnName="id")}
      * )
      */
-    protected $privileges;
+    protected $permissions;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->parents = new ArrayCollection();
         $this->children = new ArrayCollection();
-        $this->privileges = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
     }
 
     public function getArrayCopy()
@@ -116,6 +122,24 @@ class Role
     public function setName(string $name): Role
     {
         $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return Role
+     */
+    public function setDescription(string $description): Role
+    {
+        $this->description = $description;
         return $this;
     }
 
@@ -174,6 +198,16 @@ class Role
     }
 
     /**
+     * @param Role $parent
+     * @return Role
+     */
+    public function addParent(Role $parent): Role
+    {
+        $this->parents[] = $parent;
+        return $this;
+    }
+
+    /**
      * @return Collection
      */
     public function getChildren(): Collection
@@ -192,20 +226,40 @@ class Role
     }
 
     /**
-     * @return Collection
+     * @param Role $children
+     * @return Role
      */
-    public function getPrivileges(): Collection
+    public function addChild(Role $child): Role
     {
-        return $this->privileges;
+        $this->children[] = $child;
+        return $this;
     }
 
     /**
-     * @param Collection $privileges
+     * @return Collection
+     */
+    public function getPermissions(): Collection
+    {
+        return $this->permissions;
+    }
+
+    /**
+     * @param Collection $permissions
      * @return Role
      */
-    public function setPrivileges(Collection $privileges): Role
+    public function setPermissions(Collection $permissions): Role
     {
-        $this->privileges = $privileges;
+        $this->permissions = $permissions;
+        return $this;
+    }
+
+    /**
+     * @param Permission $permission
+     * @return Role
+     */
+    public function addPermission(Permission $permission): Role
+    {
+        $this->permissions[] = $permission;
         return $this;
     }
 

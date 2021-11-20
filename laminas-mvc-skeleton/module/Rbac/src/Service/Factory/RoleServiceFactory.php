@@ -5,6 +5,7 @@ namespace Rbac\Service\Factory;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Rbac\Manager\RoleManager;
 use Rbac\Service\RoleService;
 
 /**
@@ -23,7 +24,8 @@ class RoleServiceFactory implements FactoryInterface
     {
         $entityManager = $container->get(EntityManager::class);
         $cache = $container->get('FilesystemCache');
-        return new RoleService($entityManager, $cache);
+        $roleManager = $container->get(RoleManager::class);
+        return new RoleService($entityManager, $cache, $roleManager);
     }
 
 }

@@ -1,0 +1,12 @@
+<?php if (count($this->inserted) > 0): ?>
+    <ul>
+        Ont été insérés :
+        <?php foreach ($this->inserted as $inserted): ?>
+            <li>
+                <?= $inserted; ?>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php else: ?>
+    Rien n'a eu besoin d'être inséré
+<?php endif; ?>

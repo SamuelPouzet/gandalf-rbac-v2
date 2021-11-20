@@ -51,7 +51,7 @@ class Rbac
     protected function addPermissions(Role $role): array
     {
         $return = [];
-        $permissions = $role->getPrivileges();
+        $permissions = $role->getPermissions();
         foreach ($permissions as $permission){
             $return[] = $permission->getName();
         }

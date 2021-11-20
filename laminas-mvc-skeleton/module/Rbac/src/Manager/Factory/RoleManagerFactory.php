@@ -5,24 +5,20 @@ namespace Rbac\Manager\Factory;
 use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Rbac\Manager\RoleManager;
 use Rbac\Manager\UserManager;
 
-/**
- * UserManagerFactory
- */
-class UserManagerFactory implements FactoryInterface
+class RoleManagerFactory implements FactoryInterface
 {
-
     /**
      * @param ContainerInterface $container
      * @param string $requestedName
      * @param array|null $options
-     * @return UserManager
+     * @return RoleManager
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): UserManager
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): RoleManager
     {
         $entityManager = $container->get(EntityManager::class);
-        return new UserManager($entityManager);
+        return new RoleManager($entityManager);
     }
-
 }
