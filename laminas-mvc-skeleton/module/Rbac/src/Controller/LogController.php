@@ -46,11 +46,11 @@ class LogController extends AbstractActionController
             $data = $this->params()->fromPost();
             $form->setData($data);
             if ($form->isValid()) {
-                 $result = $this->authService->checkUser($form->getData());
+                $result = $this->authService->checkUser($form->getData());
 
-                 if($result->getCode()==Result::ACCESS_GRANTED){
-                     $this->redirect()->toUrl($redirecturl);
-                 }
+                if ($result->getCode() == Result::ACCESS_GRANTED) {
+                    $this->redirect()->toUrl($redirecturl);
+                }
                 $viewModel->setVariable('result', $result);
             }
         }
@@ -111,7 +111,6 @@ class LogController extends AbstractActionController
         }
 
         $response = $this->accountService->activateByToken($token);
-
 
         return new ViewModel([
             'response' => $response,

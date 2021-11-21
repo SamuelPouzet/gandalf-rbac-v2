@@ -5,6 +5,7 @@ namespace Rbac\Service;
 use Laminas\Mail\Message;
 use Laminas\Mail\Transport\Smtp;
 use Laminas\Mail\Transport\SmtpOptions;
+use Laminas\Mime\Part;
 use Laminas\View\Helper\Url;
 use Laminas\View\Model\ViewModel;
 use Laminas\View\Renderer\PhpRenderer;
@@ -33,47 +34,39 @@ class MailerService
     protected $urlHelper;
 
     /**
-     * @var TemplateMapResolver
+     * @var PhpRenderer
      */
-    protected $templateMapResolver;
+    protected $viewRenderer;
 
     /**
      * @param Message $message
      * @param array $config
      */
-    public function __construct(array $config, Url $urlHelper, TemplateMapResolver $templateMapResolver)
+    public function __construct(array $config, Url $urlHelper, PhpRenderer $viewRenderer)
     {
         $this->message = new Message();
         $this->config = $config;
         $this->urlHelper = $urlHelper;
-        $this->templateMapResolver = $templateMapResolver;
+        $this->viewRenderer = $viewRenderer;
     }
 
     /**
-     * inactive getBodyMessage
-     * @todo use renderer to have a template file for mail body
      * @return string
      */
-    public function getBodyMessage(): string
+    protected function getBodyMessage(string $template, array $config): \Laminas\Mime\Message
     {
+        // Produce HTML of password reset email
+        $bodyHtml = $this->viewRenderer->render(
+            $template, $config
+        );
 
-        $model = new ViewModel();
-        $renderer = new PhpRenderer();
-        $name = 'mailtemplate/activation';
+        $html = new Part($bodyHtml);
+        $html->type = "text/html";
 
-        $model->setTemplate($name);
+        $body = new \Laminas\Mime\Message();
+        $body->addPart($html);
 
-        if (!$this->templateMapResolver->has($name)) {
-            die('not found');
-        } elseif (!file_exists($this->templateMapResolver->get($name))) {
-            var_dump($this->templateMapResolver->get($name));
-            die('template not found');
-        }
-
-        $data = $renderer->render($model);
-
-        var_dump($this->templateMapResolver->get('activation'));
-        die;
+        return $body;
     }
 
     /**
@@ -88,72 +81,36 @@ class MailerService
         $this->message->addFrom('noreply@sampouzet.fr', 'webmaster Sam');
         $this->message->addTo($token->getUser()->getEmail());
         $this->message->setSubject('validation de votre compte sur le site Sam POUZET');
+
+        $login = $token->getUser()->getLogin();
+        $token = $token->getToken();
+        $url = $this->urlHelper;
         switch ($action) {
             case 'activate':
-                $this->message->setBody($this->generateActivationBody($token));
+                $template = 'template/mail/activate-user';
+                $route = $this->config['data']['host'] . $url('activate', ['token' => $token]);
+                $config = [
+                    'route' => $route,
+                    'login' => $login,
+                ];
                 break;
             case 'reinitialize':
-                $this->message->setBody($this->generateinitializationBody($token));
+                $template = 'rbac/template/mail/recovery-password';
+                $route = $this->config['data']['host'] . $url('password-recovery', ['token' => $token]);
+                $config = [
+                    'route' => $route,
+                    'login' => $login,
+                ];
                 break;
             default:
                 throw new \Exception('action not found');
         }
-
+        $body = $this->getBodyMessage($template, $config);
+        $this->message->setBody($body);
 
         $this->send();
     }
 
-    /**
-     * @param UserToken $token
-     * @return string
-     */
-    private function generateActivationBody(UserToken $token): string
-    {
-        $login = $token->getUser()->getLogin();
-        $token = $token->getToken();
-        $url = $this->urlHelper;
-        $destination = $this->config['data']['host'] . $url('activate', ['token' => $token]);
-
-        $body =
-            <<<TEXT
-Bonjour $login
-
-Vous vous êtes inscrits sur le site de sam POUZET
-Pour finaliser votre inscription, il est nécessaire de cliquer sur le lien suivant
-$destination
-
-Si vous n'avez pas validé l'inscription après 48 heures, vous ne pourrez plus utiliser ce lien.
-
-TEXT;
-
-        return $body;
-    }
-
-    /**
-     * @param UserToken $token
-     * @return string
-     */
-    private function generateinitializationBody(UserToken $token): string
-    {
-        $login = $token->getUser()->getLogin();
-        $token = $token->getToken();
-        $url = $this->urlHelper;
-        $destination = $this->config['data']['host'] . $url('password-recovery', ['token' => $token]);
-
-        $body =
-            <<<TEXT
-Bonjour $login
-
-Vous avez demandé la réinitialisation du mot de passe sur le site de sam POUZET
-Pour ce faire, il est nécessaire de cliquer sur le lien suivant
-$destination
-
-Si vous n'avez pas demandé cette opération, vous n'avez qu'à ignorer ce message.
-
-TEXT;
-
-        return $body;
-    }
 
     /**
      * send

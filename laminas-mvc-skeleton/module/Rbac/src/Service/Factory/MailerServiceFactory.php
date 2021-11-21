@@ -4,6 +4,7 @@ namespace Rbac\Service\Factory;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\TemplateMapResolver;
 use Rbac\Service\MailerService;
 
@@ -18,9 +19,9 @@ class MailerServiceFactory implements FactoryInterface
 
         $viewHelperManager = $container->get('ViewHelperManager');
         $urlHelper = $viewHelperManager->get('url');
-        $resolver = $container->get(TemplateMapResolver::class);
+        $viewRenderer = $container->get(PhpRenderer::class);
 
-        return new MailerService($config['mailer'], $urlHelper, $resolver);
+        return new MailerService($config['mailer'], $urlHelper, $viewRenderer);
     }
 
 }
